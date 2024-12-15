@@ -1,0 +1,21 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enter OTP</title>
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Enter your OTP</h1>
+        <form id="otp-form" method="POST">
+            <p>Enter the OTP sent to your registered mobile number<p>
+            <input type="text" id="otp" name="otp" required>
+            <button class="btn-primary" type="submit">Verify OTP</button>
+        </form>
+        <button class="btn-secondary" id="logout-button">Cancel</button>
+        <p id="error-message">Invalid OTP</p>
+    </div>
+    <script src="./js/verifyOtp.js"></script>
+</body>
+</html>

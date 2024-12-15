@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.example</groupId>
+    <artifactId>online-shopping-app</artifactId>
+    <version>1.0</version>
+
+    <packaging>war</packaging>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.glassfish.jersey.core</groupId>
+            <artifactId>jersey-server</artifactId>
+            <version>3.1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.containers</groupId>
+            <artifactId>jersey-container-servlet</artifactId>
+            <version>3.1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.ws.rs</groupId>
+            <artifactId>jakarta.ws.rs-api</artifactId>
+            <version>3.1.0</version> 
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-json-binding</artifactId>
+            <version>3.1.1</version> 
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-multipart</artifactId>
+            <version>3.1.1</version> <!-- or the version you're using -->
+        </dependency>
+
+        <dependency>
+            <groupId>org.glassfish.hk2</groupId>
+            <artifactId>hk2-utils</artifactId>
+            <version>3.1.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <version>5.0.0</version> 
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.glassfish.hk2</groupId>
+            <artifactId>hk2-api</artifactId>
+            <version>3.1.1</version> 
+        </dependency>
+
+        <dependency>
+            <groupId>org.glassfish.jersey.inject</groupId>
+            <artifactId>jersey-hk2</artifactId>
+            <version>3.1.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.glassfish.jersey.core</groupId>
+            <artifactId>jersey-client</artifactId>
+            <version>3.1.1</version> <!-- Jersey Client for 3.x -->
+        </dependency>
+
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.33</version> <!-- Use the latest version available -->
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.mindrot/jbcrypt -->
+        <dependency>
+            <groupId>org.mindrot</groupId>
+            <artifactId>jbcrypt</artifactId>
+            <version>0.4</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.twilio.sdk/twilio -->
+        <dependency>
+            <groupId>com.twilio.sdk</groupId>
+            <artifactId>twilio</artifactId>
+            <version>10.6.2</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.10.1</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/javax.mail/javax.mail-api -->
+        <dependency>
+            <groupId>com.sun.mail</groupId>
+            <artifactId>javax.mail</artifactId>
+            <version>1.6.2</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/javax.activation/activation -->
+        <dependency>
+            <groupId>javax.activation</groupId>
+            <artifactId>javax.activation-api</artifactId>
+            <version>1.2.0</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.lowagie/itext -->
+    <dependency>
+        <groupId>com.lowagie</groupId>
+        <artifactId>itext</artifactId>
+        <version>2.1.7</version>
+    </dependency>
+
+    <dependency>
+        <groupId>io.github.cdimascio</groupId>
+        <artifactId>dotenv-java</artifactId>
+        <version>3.0.0</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
+    <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>2.0.16</version>
+    </dependency>
+
+    <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-classic</artifactId>
+        <version>1.4.7</version> 
+    </dependency>
+
+    <!-- Logback Core (required for Logback) -->
+    <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-core</artifactId>
+        <version>1.4.7</version> 
+    </dependency>
+
+
+
+    </dependencies>
+
+    <build>
+                    <finalName>online-shopping-app</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>3.3.1</version>
+                <configuration>
+                    <!-- <webResources>
+                        <resource>
+                            <directory>src/main/webapp</directory>
+                            <targetPath>WEB-INF</targetPath>
+                        </resource>
+                    </webResources> -->
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+    </properties>
+
+</project>

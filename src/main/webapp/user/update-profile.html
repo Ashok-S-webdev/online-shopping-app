@@ -1,0 +1,37 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Profile Details</title>
+    <link rel="stylesheet" href="../css/product-form.css">
+</head>
+<body>
+    <div class="update-container">
+        <h1>Edit Profile</h1>
+        <form id="update-profile-form" enctype="multipart/form-data">
+            <input type="hidden" name="userId" id="userId">
+            <input type="hidden" name="todo" id="todo" value="update">
+
+            <label for="name">Name:</label>
+            <input type="text" name="username"  id="username" readonly>
+    
+            <label for="email">Email:</label>
+            <input type="email" name="email" id="email">
+    
+            <label for="mobile">Mobile:</label>
+            <input type="text" name="mobile" id="mobile" pattern="\d{10}" title="Enter a valid 10 digit mobile number">
+    
+            <div class="product-image-container">
+                <label for="profile-picture">Profile Picture:</label>
+                <img id="profile-picture" class="profile-picture" alt="User profile">
+                <input type="file"name="profile-picture" id="profile-picture" accept="image/*">
+                <label>Upload images of size less than 5mb</label>
+            </div>
+    
+            <button type="submit" class="update-btn">Save Changes</button>
+        </form>
+        <button class="go-back-btn" onclick="window.location.href='profile.html'">Go Back</button>
+    </div>
+    <script src="../js/updateProfile.js"></script>
+</body>
+</html>
