@@ -1,4 +1,4 @@
-package com.example.Repo;
+package com.example.dao;
 
 import java.io.InputStream;
 import java.sql.*;
@@ -9,10 +9,13 @@ import com.example.model.User;
 import com.example.utils.DBUtils;
 import com.example.utils.ImageUtils;
 
+// Database Operations on Users
 public class UserDao {
+
+    // Method to get user details from database
     public static List<User> getUsersList(int id) {
         List<User> users = new ArrayList<>();
-        String query = "SELECT * FROM users WHERE user_id != ?";
+        final String query = "SELECT * FROM users WHERE user_id != ?";
         try(Connection connection = DBUtils.getConnection();
         PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, id);
@@ -37,8 +40,9 @@ public class UserDao {
         return users;
     }
 
+    // Method to new user to database
     public static boolean addUser(String username, String passwordHash, String email, String mobile, InputStream imageContent) {
-        String query = "INSERT INTO users (username, password, email, mobile_number, profile_picture) VALUES (?, ?, ?, ?, ?)";
+        final String query = "INSERT INTO users (username, password, email, mobile_number, profile_picture) VALUES (?, ?, ?, ?, ?)";
 
         try (Connection conn = DBUtils.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
@@ -60,9 +64,9 @@ public class UserDao {
         return false;
     }
 
-
+    // Method to get user details by user id from database
     public static User getUserById(int userId) throws SQLException {
-        String query = "SELECT * FROM users WHERE user_id = ?";
+        final String query = "SELECT * FROM users WHERE user_id = ?";
         User user = null;
 
         try (Connection conn = DBUtils.getConnection();
@@ -89,8 +93,9 @@ public class UserDao {
         return user;
     }
 
+    // Method to get user details by username from database
     public static User getUserByUsername(String username) throws SQLException {
-        String query = "SELECT * FROM users WHERE username = ?";
+        final String query = "SELECT * FROM users WHERE username = ?";
         User user = null;
 
         try (Connection conn = DBUtils.getConnection();
@@ -119,8 +124,9 @@ public class UserDao {
         return user;
     }
 
+    // Method to update user profile to database
     public static void updateUserProfile(int id, String email, String mobile) {
-        String query = "UPDATE users SET email = ?, mobile_number = ? WHERE user_id = ?";
+        final String query = "UPDATE users SET email = ?, mobile_number = ? WHERE user_id = ?";
 
         try (Connection connection = DBUtils.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
@@ -138,8 +144,9 @@ public class UserDao {
         }
     }
 
+        // Method to update user profile along with picture in database
     public static void updateUserProfileWithImage(int id, String email, String mobile, InputStream fileContent) {
-        String query = "UPDATE users SET email = ?, mobile_number = ?, profile_picture = ? WHERE user_id = ?";
+        final String query = "UPDATE users SET email = ?, mobile_number = ?, profile_picture = ? WHERE user_id = ?";
 
         try (Connection connection = DBUtils.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {

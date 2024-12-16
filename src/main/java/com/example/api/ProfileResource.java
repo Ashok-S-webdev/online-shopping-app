@@ -8,7 +8,7 @@ import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.example.Repo.UserDao;
+import com.example.dao.UserDao;
 import com.example.model.User;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -29,6 +29,7 @@ import jakarta.ws.rs.core.Response;
 public class ProfileResource {
     private static final Logger logger = LoggerFactory.getLogger(ProfileResource.class);
 
+    // Method for getting user profile details
     @GET
     @Path("/getUserProfile")
     @Produces(MediaType.APPLICATION_JSON)
@@ -45,6 +46,7 @@ public class ProfileResource {
         return Response.ok().entity(new Gson().toJson(user)).build();
     }
 
+     // Method for updating user profile details
     @POST
     @Path("/update")
     @Consumes(MediaType.MULTIPART_FORM_DATA)

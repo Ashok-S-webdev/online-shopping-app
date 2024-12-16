@@ -16,7 +16,7 @@ import io.github.cdimascio.dotenv.Dotenv;
 public class GmailSender implements MailSender{
     private static final Logger logger = LoggerFactory.getLogger(GmailSender.class);
     
-
+    // Method for sending mail via gmail
     public void sendMail(String userEmail, byte[] pdf) {
         Dotenv dotenv = DBUtils.dotenv;
         String host = dotenv.get("GMAIL_SMTP_HOST");

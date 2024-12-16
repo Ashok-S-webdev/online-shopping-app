@@ -5,8 +5,8 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.example.Repo.CartItemDao;
-import com.example.Repo.ProductDao;
+import com.example.dao.CartItemDao;
+import com.example.dao.ProductDao;
 import com.example.model.CartItem;
 import com.example.model.Product;
 import com.example.model.User;
@@ -35,30 +35,34 @@ import jakarta.ws.rs.core.Response;
 public class CartResource {
     private static final Logger logger = LoggerFactory.getLogger(CartResource.class);
     
+    // Method for getting all the cart item details
     @GET
     @Path("/cartItems")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getCartItems(@Context HttpServletRequest request) {
         User user = (User) request.getSession().getAttribute("user");
-        JsonArray cartArray = new JsonArray();
+        // JsonArray cartArray = new JsonArray();
 
-        List<CartItem> cartItems = CartItemDao.getCartItems(user.getUserId());
+        // List<CartItem> cartItems = CartItemDao.getCartItems(user.getUserId());
 
-        for (CartItem cartItem: cartItems) {
-            Product product = ProductDao.getProductByProductId(cartItem.getProductId());
-            JsonObject jsonObject = new JsonObject();
-            jsonObject.addProperty("cartItemId", cartItem.getCartItemId());
-            jsonObject.addProperty("productId", product.getProductId());
-            jsonObject.addProperty("name", product.getProductName());
-            jsonObject.addProperty("description", product.getProductDescription());
-            jsonObject.addProperty("price", product.getProductPrice());
-            jsonObject.addProperty("quantity", cartItem.getQuantity());
-            jsonObject.addProperty("productImage", product.getProductImage());
-            cartArray.add(jsonObject);
-        }
+        // for (CartItem cartItem: cartItems) {
+        //     Product product = ProductDao.getProductByProductId(cartItem.getProductId());
+        //     JsonObject jsonObject = new JsonObject();
+        //     jsonObject.addProperty("cartItemId", cartItem.getCartItemId());
+        //     jsonObject.addProperty("productId", product.getProductId());
+        //     jsonObject.addProperty("name", product.getProductName());
+        //     jsonObject.addProperty("description", product.getProductDescription());
+        //     jsonObject.addProperty("price", product.getProductPrice());
+        //     jsonObject.addProperty("quantity", cartItem.getQuantity());
+        //     jsonObject.addProperty("productImage", product.getProductImage());
+        //     cartArray.add(jsonObject);
+        // }
+
+        JsonArray cartArray = CartItemDao.getCartItemsJson(user.getUserId());
         return Response.ok().entity(cartArray.toString()).build();
     }
 
+    // Method for updating quantity of the cart item
     @PUT
     @Path("/update")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
@@ -75,6 +79,7 @@ public class CartResource {
         return Response.ok().entity(jsonObject.toString()).build();
     }
 
+    // Method for removing cart item from the cart
     @DELETE
     @Path("/remove")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
@@ -90,6 +95,7 @@ public class CartResource {
         return Response.ok().entity(jsonObject.toString()).build();
     }
 
+    // Method for checkout
     @POST
     @Path("/checkout")
     @Produces(MediaType.APPLICATION_JSON)
@@ -126,6 +132,7 @@ public class CartResource {
         return Response.ok().entity(jsonObject.toString()).build();
     }
 
+     // Method for calculating the subtotal amount for the cart
     private static double calculateTotalAmount(List<CartItem> cartItems) {
         double total = 0.0;
         for (CartItem item : cartItems) {

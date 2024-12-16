@@ -7,8 +7,8 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.example.Repo.CartItemDao;
-import com.example.Repo.ProductDao;
+import com.example.dao.CartItemDao;
+import com.example.dao.ProductDao;
 import com.example.model.CartItem;
 import com.example.model.Product;
 import com.example.model.User;
@@ -34,6 +34,7 @@ public class UserResource {
 
     private static final int PAGE_SIZE = 4;
 
+    // Method for getting User info
     @GET
     @Path("/info")
     @Produces(MediaType.APPLICATION_JSON)
@@ -47,6 +48,7 @@ public class UserResource {
         return Response.status(Response.Status.OK).entity(jsonObject.toString()).build();
     }
 
+    // Method for getting available products
     @GET
     @Path("/products")
     @Produces(MediaType.APPLICATION_JSON)
@@ -64,6 +66,7 @@ public class UserResource {
         return Response.status(Response.Status.OK).entity(new Gson().toJson(result)).build();
     }
 
+    // Method for adding product to cart
     @POST
     @Path("/addToCart")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
@@ -73,7 +76,7 @@ public class UserResource {
         @Context HttpServletRequest request
     ) {
         User user = (User) request.getSession().getAttribute("user");
-        CartItem cartItem = CartItemDao.getCartItemByProductId(productId);
+        CartItem cartItem = CartItemDao.getCartItemByProductIdAndUserId(user.getUserId(), productId);
         if (cartItem == null) {
             boolean addedToCart = CartItemDao.addProductToCart(user.getUserId(), productId);
             JsonObject jsonObject = new JsonObject();

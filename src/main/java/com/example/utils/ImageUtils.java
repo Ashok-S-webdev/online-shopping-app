@@ -8,6 +8,8 @@ import java.sql.SQLException;
 import java.util.Base64;
 
 public class ImageUtils {
+
+    // Method for converting Blob into Base64 String
     public static String Base64Converter(Blob image) {
         if (image == null) {
             return null;

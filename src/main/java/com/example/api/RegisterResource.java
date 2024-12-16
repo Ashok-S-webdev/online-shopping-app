@@ -10,7 +10,7 @@ import java.sql.SQLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.example.Repo.UserDao;
+import com.example.dao.UserDao;
 import com.example.model.User;
 import com.example.utils.Security;
 import com.google.gson.JsonObject;
@@ -70,6 +70,7 @@ public class RegisterResource {
             }
         }
 
+        // For default image
     private InputStream getDefaultImage() throws FileNotFoundException {
         File defaultImage = new File(DEFAULT_IMAGE_PATH);
         return new FileInputStream(defaultImage);

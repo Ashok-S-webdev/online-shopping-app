@@ -1,5 +1,6 @@
-package com.example.Repo;
+package com.example.dao;
 
+import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -9,10 +10,16 @@ import java.util.List;
 
 import com.example.model.CartItem;
 import com.example.utils.DBUtils;
+import com.example.utils.ImageUtils;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
+// Database Operations on Cart Items
 public class CartItemDao {
+
+    // Method to retrieve all cart item details from database
     public static List<CartItem> getCartItems(int loggedInUserId) {
-        String query = "SELECT * FROM cartitems WHERE user_id = ?";
+        final String query = "SELECT * FROM cartitems WHERE user_id = ?";
         List<CartItem> cartItemsList = new ArrayList<>();
 
         try (Connection conn = DBUtils.getConnection();
@@ -36,8 +43,42 @@ public class CartItemDao {
         return cartItemsList;
     }
 
+    // Method for getting cart items along with product details
+    public static JsonArray getCartItemsJson(int userId) {
+        final String query = "SELECT * FROM cartitems c INNER JOIN products p ON c.product_id = p.product_id WHERE user_id = ?";
+        JsonArray jsonArray = new JsonArray();
+
+        try (Connection connection = DBUtils.getConnection();
+        PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setInt(1, userId);
+
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                JsonObject jsonObject = new JsonObject();
+                
+                jsonObject.addProperty("cartItemId", resultSet.getInt("cart_item_id"));
+                jsonObject.addProperty("productId", resultSet.getInt("product_id"));
+                jsonObject.addProperty("name", resultSet.getString("product_name"));
+                jsonObject.addProperty("description", resultSet.getString("product_description"));
+                jsonObject.addProperty("price", resultSet.getDouble("product_price"));
+                jsonObject.addProperty("quantity", resultSet.getInt("quantity"));
+                Blob productBlob = resultSet.getBlob("product_image");
+                jsonObject.addProperty("productImage", ImageUtils.Base64Converter(productBlob));
+                jsonArray.add(jsonObject);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return jsonArray;
+    }
+
+    // Method to retrieve cart item details by cart item id from database
     public static CartItem getCartItemByCartItemId(int id) {
-        String query = "SELECT * FROM cartitems WHERE cart_item_id = ?";
+        final String query = "SELECT * FROM cartitems WHERE cart_item_id = ?";
         CartItem cartItem = null;
 
         try (Connection connection = DBUtils.getConnection();
@@ -59,8 +100,9 @@ public class CartItemDao {
         return cartItem;
     }
 
+    // Method to retrieve cart item details by product id from database
     public static CartItem getCartItemByProductId(int id) {
-        String query = "SELECT * FROM cartitems WHERE product_id = ?";
+        final String query = "SELECT * FROM cartitems WHERE product_id = ?";
         CartItem cartItem = null;
 
         try (Connection connection = DBUtils.getConnection();
@@ -82,10 +124,34 @@ public class CartItemDao {
         return cartItem;
     }
 
+    // Method to retrieve cart items of specific user
+    public static CartItem getCartItemByProductIdAndUserId(int uId, int pId) {
+        final String query = "SELECT * FROM cartitems WHERE user_id = ? AND product_id = ?";
+        CartItem cartItem = null;
 
+        try (Connection connection = DBUtils.getConnection();
+        PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, uId);
+            statement.setInt(2, pId);
+            ResultSet resultSet = statement.executeQuery();
 
+            if (resultSet.next()) {
+                int cartItemId = resultSet.getInt("cart_item_id");
+                int userId = resultSet.getInt("user_id");
+                int productId = resultSet.getInt("product_id");
+                int quantity = resultSet.getInt("quantity");
+
+                cartItem = new CartItem(cartItemId, userId, productId, quantity);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return cartItem;
+    }
+
+    // Method to add product details to database
     public static boolean addProductToCart(int userId, int productId) {
-        String query = "INSERT INTO cartitems (user_id, product_id, quantity) VALUES (?, ?, 1)";
+        final String query = "INSERT INTO cartitems (user_id, product_id, quantity) VALUES (?, ?, 1)";
 
         try (Connection connection = DBUtils.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
@@ -102,8 +168,9 @@ public class CartItemDao {
         return false;
     }
 
+    // Method to remove cart item from database
     public static void removeItemFromCart(int cartItemId) {
-        String query = "DELETE FROM cartitems WHERE cart_item_id = ?";
+        final String query = "DELETE FROM cartitems WHERE cart_item_id = ?";
 
         try (Connection connection = DBUtils.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
@@ -118,13 +185,14 @@ public class CartItemDao {
         }
     }
 
+    // Method to update quantity of cart item in database
     public static void updateItemQuantity(int cartItemId, int i) {
         CartItem cartItem = getCartItemByCartItemId(cartItemId);
         int newQuantity = cartItem.getQuantity() + i;
         if (newQuantity == 0) {
             removeItemFromCart(cartItemId);
         }
-        String query = "UPDATE cartitems SET quantity = ? WHERE cart_item_id = ?";
+        final String query = "UPDATE cartitems SET quantity = ? WHERE cart_item_id = ?";
 
         try (Connection connection = DBUtils.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
@@ -140,8 +208,9 @@ public class CartItemDao {
         }
     }
 
+    // Method to clear all cart items in database for a specific user 
     public static void clearCart(int userId) {
-        String query = "DELETE FROM cartitems WHERE user_id = ?";
+        final String query = "DELETE FROM cartitems WHERE user_id = ?";
 
         try (Connection connection = DBUtils.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {

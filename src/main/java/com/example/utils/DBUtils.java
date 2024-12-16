@@ -13,6 +13,7 @@ public class DBUtils {
     private static final String PASSWORD = dotenv.get("DB_PASSWORD");
     private static final String DRIVER_CLASS = dotenv.get("DRIVER_CLASS");
 
+    // Method for creating database connection
     public static Connection getConnection() throws SQLException {
         Connection connection;
         try {

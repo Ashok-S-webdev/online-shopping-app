@@ -6,7 +6,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.example.Repo.ProductDao;
+import com.example.dao.ProductDao;
 import com.example.model.CartItem;
 import com.example.model.Product;
 import com.lowagie.text.Document;
@@ -16,6 +16,8 @@ import com.lowagie.text.pdf.PdfWriter;
 
 public class PDFGenerator {
     private static final Logger logger = LoggerFactory.getLogger(PDFGenerator.class);
+
+    // Method to create PDF and add details to it
     public static byte[] generatePDF(List<CartItem> cartItems, double total) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
 

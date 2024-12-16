@@ -11,8 +11,8 @@ import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.example.Repo.ProductDao;
-import com.example.Repo.UserDao;
+import com.example.dao.ProductDao;
+import com.example.dao.UserDao;
 import com.example.model.Product;
 import com.example.model.User;
 import com.google.gson.Gson;
@@ -38,6 +38,7 @@ public class AdminResource {
     private static final Logger logger = LoggerFactory.getLogger(AdminResource.class);
     private static final String DEFAULT_IMAGE_PATH = "C:\\Program Files\\Apache Software Foundation\\Tomcat 10.1\\webapps\\online-shopping-app\\data\\clock.jpg";
 
+    // Method for getting all the user details
     @GET
     @Path("/getUsers")
     @Produces(MediaType.APPLICATION_JSON)
@@ -52,6 +53,7 @@ public class AdminResource {
         return Response.ok(new Gson().toJson(users)).build();
     }
 
+    // Method for getting all the product details
     @GET
     @Path("/getProducts")
     @Produces(MediaType.APPLICATION_JSON)
@@ -60,6 +62,7 @@ public class AdminResource {
         return Response.ok(new Gson().toJson(products)).build();
     }
 
+    // Method for getting a single product detail with productId
     @GET
     @Path("/getProductDetails")
     @Produces(MediaType.APPLICATION_JSON)
@@ -71,6 +74,7 @@ public class AdminResource {
         return Response.ok(new Gson().toJson(product)).build();
     }
 
+    // Method for removing product from database
     @DELETE
     @Path("/removeProduct")
     @Produces(MediaType.APPLICATION_JSON)
@@ -85,6 +89,7 @@ public class AdminResource {
         return Response.ok(jsonObject.toString()).build();
     }
 
+    // Method for updating product details in database
     @PUT
     @Path("/updateProduct")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
@@ -106,6 +111,7 @@ public class AdminResource {
 
         boolean isImageAvailable = false;
 
+        // For checking if image is uploaded
         if (filePart != null) {
             isImageAvailable = true;
         }
@@ -128,6 +134,7 @@ public class AdminResource {
         }
     }
 
+    // Method to add new product
     @POST
     @Path("/addProduct")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
@@ -147,6 +154,7 @@ public class AdminResource {
             return Response.status(Response.Status.CONFLICT).entity(jsonObject.toString()).build();
         }
 
+         // Chekcing if image is uploaded
         InputStream fileContent = null;
         try {
             if (filePart != null && filePart.getSize() > 0) {
@@ -170,6 +178,7 @@ public class AdminResource {
         }
     }
     
+    // Method for getting default image from default path
     private InputStream getDefaultImage() throws FileNotFoundException {
         File defaultImage = new File(DEFAULT_IMAGE_PATH);
         return new FileInputStream(defaultImage);

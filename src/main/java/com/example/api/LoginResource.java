@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.example.Repo.UserDao;
+import com.example.dao.UserDao;
 import com.example.model.User;
 import com.example.utils.OTPSender;
 import com.example.utils.Security;

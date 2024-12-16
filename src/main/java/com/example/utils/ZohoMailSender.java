@@ -16,6 +16,7 @@ import io.github.cdimascio.dotenv.Dotenv;
 public class ZohoMailSender implements MailSender {
     private static final Logger logger = LoggerFactory.getLogger(ZohoMailSender.class);
 
+    // Method to send mail via zoho mail
     public void sendMail(String userEmail, byte[] pdf) {
         Dotenv dotenv = DBUtils.dotenv;
         String host = dotenv.get("ZOHO_SMTP_HOST");

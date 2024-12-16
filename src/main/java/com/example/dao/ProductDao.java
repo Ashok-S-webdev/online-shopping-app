@@ -1,4 +1,4 @@
-package com.example.Repo;
+package com.example.dao;
 
 import java.io.InputStream;
 import java.sql.Blob;
@@ -13,9 +13,12 @@ import com.example.model.Product;
 import com.example.utils.DBUtils;
 import com.example.utils.ImageUtils;
 
+// Database Operations on Products
 public class ProductDao {
+
+        // Method to get all product details from database
     public static List<Product> getProducts() {
-        String query = "SELECT * FROM products";
+        final String query = "SELECT * FROM products";
         List<Product> productList = new ArrayList<>();
 
         try (Connection conn = DBUtils.getConnection();
@@ -40,10 +43,12 @@ public class ProductDao {
         }
         return productList;
     }
+    
 
+        // Method to get product details for pagination from database
     public static List<Product> getProductsForPage(int page, int pageSize) {
         List<Product> productList = new ArrayList<>();
-        String query = "SELECT * FROM PRODUCTS LIMIT ?, ?";
+        final String query = "SELECT * FROM PRODUCTS LIMIT ?, ?";
         try(Connection connection = DBUtils.getConnection();
             PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, (page - 1) * pageSize);
@@ -69,8 +74,9 @@ public class ProductDao {
         return productList;
     }
 
+    // Method to get product by product id from database
     public static Product getProductByProductId(int id) {
-        String query = "SELECT * FROM products WHERE product_id = ?";
+        final String query = "SELECT * FROM products WHERE product_id = ?";
         Product product = null;
 
         try (Connection connection = DBUtils.getConnection();
@@ -95,8 +101,9 @@ public class ProductDao {
         return product;
     }
 
+    // Method to get product details by product name from database
     public static Product getProductByProductName(String name) {
-        String query = "SELECT * FROM products WHERE product_name = ?";
+        final String query = "SELECT * FROM products WHERE product_name = ?";
         Product product = null;
 
         try (Connection connection = DBUtils.getConnection();
@@ -121,8 +128,9 @@ public class ProductDao {
         return product;
     }
 
+    // Method to add product to database
     public static void addProductToDB(String name, String description, Double price, InputStream image) {
-        String query = "INSERT INTO products (product_name, product_image, product_description, product_price) VALUES (?, ?, ?, ?)";
+        final String query = "INSERT INTO products (product_name, product_image, product_description, product_price) VALUES (?, ?, ?, ?)";
 
         try (Connection connection = DBUtils.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
@@ -139,8 +147,9 @@ public class ProductDao {
         }
     }
 
+    // Method to update product details to database
     public static void updateProductDetails(int id, String description, Double price) {
-        String query = "UPDATE products SET product_description = ?, product_price = ? WHERE product_id = ?";
+        final String query = "UPDATE products SET product_description = ?, product_price = ? WHERE product_id = ?";
 
         try (Connection connection = DBUtils.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
@@ -158,8 +167,9 @@ public class ProductDao {
         }
     }
 
+    // Method to update product details and product image to database
     public static void updateProductWithImage(int id, String description, Double price, InputStream image) {
-        String query = "UPDATE products SET product_description = ?, product_price = ?, product_image = ? WHERE product_id = ?";
+        final String query = "UPDATE products SET product_description = ?, product_price = ?, product_image = ? WHERE product_id = ?";
 
         try (Connection connection = DBUtils.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
@@ -178,8 +188,9 @@ public class ProductDao {
         }
     }
 
+    // Method to remove product from database
     public static void removeProduct(int productId) {
-        String query = "DELETE FROM products WHERE product_id = ?";
+        final String query = "DELETE FROM products WHERE product_id = ?";
 
         try (Connection connection = DBUtils.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
@@ -194,10 +205,11 @@ public class ProductDao {
         }
     }
 
+    // Method to get total products count for pagination purpose
     public static int getTotalProductsCount() {
         int count = 0;
 
-        String query = "SELECT COUNT(*) FROM products";
+        final String query = "SELECT COUNT(*) FROM products";
 
         try (Connection connection = DBUtils.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
