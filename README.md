@@ -31,8 +31,11 @@ Create a file named .env in the src/main/resource folder.
 Copy the contents of the src/main/resource/.env.example file and replace all the values with your data.
 
 ## Running the app
-run <mvn clean install>
+run 
+```
+mvn clean install
+```
 
-Copy the generated online-shopping-app.war file and place it in the webapp folder of your tomcat
+Copy the generated online-shopping-app.war file in the target folder and place it in the webapp folder of your tomcat
 
 Run the tomcat servet. Go to localhost:<port_number>/online-shopping-app/
