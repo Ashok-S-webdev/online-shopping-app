@@ -5,6 +5,8 @@ import java.io.InputStream;
 import java.sql.SQLException;
 
 import org.glassfish.jersey.media.multipart.FormDataParam;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.example.Repo.UserDao;
 import com.example.model.User;
@@ -25,6 +27,8 @@ import jakarta.ws.rs.core.Response;
 
 @Path("/profile")
 public class ProfileResource {
+    private static final Logger logger = LoggerFactory.getLogger(ProfileResource.class);
+
     @GET
     @Path("/getUserProfile")
     @Produces(MediaType.APPLICATION_JSON)
@@ -65,11 +69,13 @@ public class ProfileResource {
                 UserDao.updateUserProfile(userId, email, mobile);
             }
         } catch (Exception e) {
+            logger.error("Error updating User Profile with User Id {}", userId, e);
             e.printStackTrace();
         }
 
         jsonObject.addProperty("status", "success");
         jsonObject.addProperty("message", "User profile updated");
+        logger.info("User profile with User Id: {} updated", userId);
 
         return Response.ok().entity(jsonObject.toString()).build();
     }

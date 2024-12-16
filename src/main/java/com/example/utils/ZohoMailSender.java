@@ -8,10 +8,13 @@ import javax.mail.*;
 import javax.mail.internet.*;
 import javax.mail.util.ByteArrayDataSource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import io.github.cdimascio.dotenv.Dotenv;
 
 public class ZohoMailSender implements MailSender {
+    private static final Logger logger = LoggerFactory.getLogger(ZohoMailSender.class);
 
     public void sendMail(String userEmail, byte[] pdf) {
         Dotenv dotenv = DBUtils.dotenv;
@@ -53,8 +56,10 @@ public class ZohoMailSender implements MailSender {
 
             Transport.send(message);
             System.out.println("Email from Zoho mail sent successfully!");
+            logger.info("Mail with Bill from Zoho Mail is sent to the user successfully");
 
         } catch (MessagingException mex) {
+            logger.error("Error sending mail to the user", mex.getMessage());
             mex.printStackTrace();
         }
     }

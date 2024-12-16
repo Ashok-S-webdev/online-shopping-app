@@ -3,6 +3,9 @@ package com.example.utils;
 import java.io.ByteArrayOutputStream;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.example.Repo.ProductDao;
 import com.example.model.CartItem;
 import com.example.model.Product;
@@ -12,6 +15,7 @@ import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.PdfWriter;
 
 public class PDFGenerator {
+    private static final Logger logger = LoggerFactory.getLogger(PDFGenerator.class);
     public static byte[] generatePDF(List<CartItem> cartItems, double total) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
@@ -34,7 +38,9 @@ public class PDFGenerator {
             document.add(new Paragraph("\nTotal Amount: \u20B9" + total));
 
             document.close();
+            logger.info("Bill PDF generated successfully");
         } catch (DocumentException e) {
+            logger.error("Error generating Bill PDF", e);
             e.printStackTrace();
         }
         return baos.toByteArray();

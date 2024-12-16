@@ -7,6 +7,9 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.sql.SQLException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.example.Repo.UserDao;
 import com.example.model.User;
 import com.example.utils.Security;
@@ -22,6 +25,7 @@ import jakarta.ws.rs.core.Response;
 
 @Path("/register")
 public class RegisterResource {
+    private static final Logger logger = LoggerFactory.getLogger(RegisterResource.class);
     private static final String DEFAULT_IMAGE_PATH = "C:\\Program Files\\Apache Software Foundation\\Tomcat 10.1\\webapps\\online-shopping-app\\data\\profile-icon.png";
 
     @POST
@@ -56,10 +60,12 @@ public class RegisterResource {
             if (userCreated) {
                 jsonObject.addProperty("status", "success");
                 jsonObject.addProperty("message", "User created successfully");
+                logger.info("New User Registration successful");
                 return Response.status(Response.Status.CREATED).entity(jsonObject.toString()).build();
             } else {
                 jsonObject.addProperty("status", "error");
                 jsonObject.addProperty("message", "Error creating account");
+                logger.info("Error in creating New User account");
                 return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(jsonObject.toString()).build();
             }
         }

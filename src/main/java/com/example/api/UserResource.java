@@ -4,6 +4,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.example.Repo.CartItemDao;
 import com.example.Repo.ProductDao;
 import com.example.model.CartItem;
@@ -27,6 +30,7 @@ import jakarta.ws.rs.core.Response;
 
 @Path("/user")
 public class UserResource {
+    private static final Logger logger = LoggerFactory.getLogger(UserResource.class);
 
     private static final int PAGE_SIZE = 4;
 
@@ -76,16 +80,19 @@ public class UserResource {
             if (addedToCart) {
                 jsonObject.addProperty("status", "success");
                 jsonObject.addProperty("message", "Product added to cart successfully");
+                logger.info("Product with Product Id: {} added to cart", productId);
                 return Response.status(Response.Status.OK).entity(jsonObject.toString()).build();
             } else {
                 jsonObject.addProperty("status", "error");
                 jsonObject.addProperty("message", "Error adding product to cart");
+                logger.info("Error adding Product with Product Id: {} to cart", productId);
                 return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(jsonObject.toString()).build();
             }
         } else {
             JsonObject jsonObject = new JsonObject();
             jsonObject.addProperty("status", "error");
             jsonObject.addProperty("message", "Product Already in cart");
+            logger.warn("Cannot add a Product which is already in the cart");
             return Response.status(Response.Status.CONFLICT).entity(jsonObject.toString()).build();
         }
     }

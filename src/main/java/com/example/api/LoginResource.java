@@ -40,11 +40,11 @@ public class LoginResource {
             session.setAttribute("username", user.getUsername());
     
             String otp = OTPSender.generateOTP();
+            logger.info("OTP generated successfully");
             session.setAttribute("otp", otp);
             System.out.println("OTP: " + otp);
             try {
                 OTPSender.sendOTPToUser(user.getMobile(), otp);
-                logger.info("OTP is sent to the {}'s registered Mobile number {}", user.getUsername(), user.getMobile());
             } catch (Exception e) {
                 e.printStackTrace();
                 jsonObject.addProperty("status", "error");

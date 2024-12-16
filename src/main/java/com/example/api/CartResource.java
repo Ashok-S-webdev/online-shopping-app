@@ -2,6 +2,9 @@ package com.example.api;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.example.Repo.CartItemDao;
 import com.example.Repo.ProductDao;
 import com.example.model.CartItem;
@@ -30,6 +33,7 @@ import jakarta.ws.rs.core.Response;
 
 @Path("/cart")
 public class CartResource {
+    private static final Logger logger = LoggerFactory.getLogger(CartResource.class);
     
     @GET
     @Path("/cartItems")
@@ -67,6 +71,7 @@ public class CartResource {
         CartItemDao.updateItemQuantity(cartItemId, quantityChange);
         jsonObject.addProperty("status", "success");
         jsonObject.addProperty("message", "Item Quantity Updated");
+        logger.info("Cart Item with Cart Item Id: {} details updated", cartItemId);
         return Response.ok().entity(jsonObject.toString()).build();
     }
 
@@ -81,6 +86,7 @@ public class CartResource {
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("status", "success");
         jsonObject.addProperty("message", "Item removed from cart");
+        logger.info("Cart Item with Cart Item Id: {} removed from the cart", cartItemId);
         return Response.ok().entity(jsonObject.toString()).build();
     }
 
@@ -95,6 +101,7 @@ public class CartResource {
         if (cartItems.isEmpty()) {
             jsonObject.addProperty("status", "error");
             jsonObject.addProperty("message", "No products in the cart!");
+            logger.warn("Empty cart cannot be checked out");
             return Response.ok(jsonObject.toString()).build();
         } 
         double total = calculateTotalAmount(cartItems);
@@ -108,12 +115,14 @@ public class CartResource {
                 zohoMailSender.sendMail(user.getEmail(), pdf);
             } catch (Exception e) {
                 e.printStackTrace();
+                logger.error("Error sending Bill as mail", e);
             }
         } ).start();
 
         CartItemDao.clearCart(user.getUserId());
         jsonObject.addProperty("status", "success");
         jsonObject.addProperty("message", "Checkout Successful. Your Bill is sent to your mail!");
+        logger.info("Cart Items checked out");
         return Response.ok().entity(jsonObject.toString()).build();
     }
 

@@ -8,6 +8,8 @@ import java.io.InputStream;
 import java.util.List;
 
 import org.glassfish.jersey.media.multipart.FormDataParam;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.example.Repo.ProductDao;
 import com.example.Repo.UserDao;
@@ -33,6 +35,7 @@ import jakarta.ws.rs.core.Response;
 
 @Path("/admin")
 public class AdminResource {
+    private static final Logger logger = LoggerFactory.getLogger(AdminResource.class);
     private static final String DEFAULT_IMAGE_PATH = "C:\\Program Files\\Apache Software Foundation\\Tomcat 10.1\\webapps\\online-shopping-app\\data\\clock.jpg";
 
     @GET
@@ -77,6 +80,7 @@ public class AdminResource {
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("status", "success");
         jsonObject.addProperty("message", "Product removed");
+        logger.info("Product with Product Id: {} removed", productId);
 
         return Response.ok(jsonObject.toString()).build();
     }
@@ -114,10 +118,12 @@ public class AdminResource {
             }
             jsonObject.addProperty("status", "success");
             jsonObject.addProperty("message", "Product details updated successfully");
+            logger.info("Product with Product Id: {} details updated.", productId);
             return Response.ok(jsonObject.toString()).build();
         } catch (Exception e) {
             jsonObject.addProperty("status", "error");
             jsonObject.addProperty("message", "Error updating product: " + e.getMessage());
+            logger.info("Error in updating Product with Product Id: {} {}", productId, e.getMessage());
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(jsonObject.toString()).build();
         }
     }
@@ -153,11 +159,13 @@ public class AdminResource {
 
             jsonObject.addProperty("status", "success");
             jsonObject.addProperty("message", "Product added successfully");
+            logger.info("New Product added with Product Name: {}", name);
             return Response.status(Response.Status.CREATED).entity(jsonObject.toString()).build();
 
         } catch (IOException e) {
             jsonObject.addProperty("status", "error");
             jsonObject.addProperty("message", "Error adding product: " + e.getMessage());
+            logger.error("Error adding new Product", e.getMessage());
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(jsonObject.toString()).build();
         }
     }

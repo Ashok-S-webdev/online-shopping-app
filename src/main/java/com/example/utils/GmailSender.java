@@ -8,9 +8,13 @@ import javax.mail.*;
 import javax.mail.internet.*;
 import javax.mail.util.ByteArrayDataSource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import io.github.cdimascio.dotenv.Dotenv;
 
 public class GmailSender implements MailSender{
+    private static final Logger logger = LoggerFactory.getLogger(GmailSender.class);
     
 
     public void sendMail(String userEmail, byte[] pdf) {
@@ -53,8 +57,10 @@ public class GmailSender implements MailSender{
 
             Transport.send(message);
             System.out.println("Email from Gmail sent successfully!");
+            logger.info("Mail with Bill from Gmail is sent to the user successfully");
 
         } catch (MessagingException mex) {
+            logger.error("Error sending mail from Gmail", mex.getMessage());
             mex.printStackTrace();
         }
     }
