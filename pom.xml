@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.example</groupId>
+    <groupId>com.onlineshopping</groupId>
     <artifactId>online-shopping-app</artifactId>
     <version>1.0</version>
 
@@ -34,7 +34,7 @@
         <dependency>
             <groupId>org.glassfish.jersey.media</groupId>
             <artifactId>jersey-media-multipart</artifactId>
-            <version>3.1.1</version> <!-- or the version you're using -->
+            <version>3.1.1</version> 
         </dependency>
 
         <dependency>
