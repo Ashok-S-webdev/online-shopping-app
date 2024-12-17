@@ -15,6 +15,10 @@ import com.onlineshopping.dao.UserDao;
 import com.onlineshopping.model.User;
 import com.onlineshopping.utils.Security;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.FormParam;
 import jakarta.ws.rs.POST;
@@ -31,10 +35,23 @@ public class RegisterResource {
     @POST
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "New user registration", description = "Registering and adding new user to database")
+    @ApiResponses({
+        @ApiResponse(responseCode = "201", description = "User created and added to database"),
+        @ApiResponse(responseCode = "409", description = "User with the same username exists"),
+        @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
     public Response registerUser(
+        @Parameter(description = "Username", required = true)
         @FormParam("username") String username,
+
+        @Parameter(description = "Password", required = true)
         @FormParam("password") String password,
+
+        @Parameter(description = "Email ID", required = true)
         @FormParam("email") String email,
+
+        @Parameter(description = "Mobile Number", required = true)
         @FormParam("mobile") String mobile) throws SQLException {
             JsonObject jsonObject = new JsonObject();
 

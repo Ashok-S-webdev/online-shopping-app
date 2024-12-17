@@ -12,6 +12,10 @@ import com.onlineshopping.model.User;
 import com.onlineshopping.utils.OTPSender;
 import com.onlineshopping.utils.Security;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.ws.rs.Consumes;
@@ -30,7 +34,21 @@ public class LoginResource {
     @POST
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response login(@FormParam("username") String username, @FormParam("password") String password, @Context HttpServletRequest request) throws IOException, SQLException{
+    @Operation(summary = "Login user", description = "Checks for user credentials and creates a session without role")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "User authenticated and OTP is sent"),
+        @ApiResponse(responseCode = "401", description = "Invalid username or password"),
+        @ApiResponse(responseCode = "500", description = "Internal Server Error")
+    })
+    public Response login(
+        @Parameter(description = "Username", required = true)
+        @FormParam("username") String username, 
+        
+        @Parameter(description = "Password", required = true)
+        @FormParam("password") String password,
+        
+        @Context HttpServletRequest request
+    ) throws IOException, SQLException{
         User user = authenticateUser(username, password);
         JsonObject jsonObject = new JsonObject();
         if (user != null) {

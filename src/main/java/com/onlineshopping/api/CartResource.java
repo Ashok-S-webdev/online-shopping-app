@@ -17,6 +17,10 @@ import com.onlineshopping.utils.MailSender;
 import com.onlineshopping.utils.PDFGenerator;
 import com.onlineshopping.utils.ZohoMailSender;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
@@ -38,25 +42,12 @@ public class CartResource {
     @GET
     @Path("/cartItems")
     @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Get all cart items", description = "Fetch all the cart items of the user")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Retrieved all the cart items from database")
+    })
     public Response getCartItems(@Context HttpServletRequest request) {
         User user = (User) request.getSession().getAttribute("user");
-        // JsonArray cartArray = new JsonArray();
-
-        // List<CartItem> cartItems = CartItemDao.getCartItems(user.getUserId());
-
-        // for (CartItem cartItem: cartItems) {
-        //     Product product = ProductDao.getProductByProductId(cartItem.getProductId());
-        //     JsonObject jsonObject = new JsonObject();
-        //     jsonObject.addProperty("cartItemId", cartItem.getCartItemId());
-        //     jsonObject.addProperty("productId", product.getProductId());
-        //     jsonObject.addProperty("name", product.getProductName());
-        //     jsonObject.addProperty("description", product.getProductDescription());
-        //     jsonObject.addProperty("price", product.getProductPrice());
-        //     jsonObject.addProperty("quantity", cartItem.getQuantity());
-        //     jsonObject.addProperty("productImage", product.getProductImage());
-        //     cartArray.add(jsonObject);
-        // }
-
         JsonArray cartArray = CartItemDao.getCartItemsJson(user.getUserId());
         return Response.ok().entity(cartArray.toString()).build();
     }
@@ -66,8 +57,15 @@ public class CartResource {
     @Path("/update")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Update cart item", description = "Update the quantity of the cart item in user cart")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Cart item quantity updated")
+    })
     public Response updateQuantity(
+        @Parameter(description = "Cart Item ID", required = true)
         @FormParam("cartItemId") int cartItemId,
+
+        @Parameter(description = "Quantity", required = true)
         @FormParam("quantityChange") int quantityChange
     ) {
         JsonObject jsonObject = new JsonObject();
@@ -83,7 +81,12 @@ public class CartResource {
     @Path("/remove")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Remove cart item", description = "Remove cart item from the user cart")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Cart item removed from the user cart")
+    })
     public Response removeItem(
+        @Parameter(description = "Cart Item ID", required = true)
         @FormParam("cartItemId") int cartItemId
     ) {
         CartItemDao.removeItemFromCart(cartItemId);
@@ -98,6 +101,11 @@ public class CartResource {
     @POST
     @Path("/checkout")
     @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Checkout cart", description = "Checkout the user cart")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Cart checked out and bill sent to user"),
+        @ApiResponse(responseCode = "404", description = "No products in the cart")
+    })
     public Response checkout(@Context HttpServletRequest request) {
         User user = (User) request.getSession().getAttribute("user");
         List<CartItem> cartItems = CartItemDao.getCartItems(user.getUserId());
@@ -107,7 +115,7 @@ public class CartResource {
             jsonObject.addProperty("status", "error");
             jsonObject.addProperty("message", "No products in the cart!");
             logger.warn("Empty cart cannot be checked out");
-            return Response.ok(jsonObject.toString()).build();
+            return Response.status(Response.Status.NOT_FOUND).entity(jsonObject).build();
         } 
         double total = calculateTotalAmount(cartItems);
 

@@ -15,6 +15,10 @@ import com.onlineshopping.model.CartItem;
 import com.onlineshopping.model.Product;
 import com.onlineshopping.model.User;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DefaultValue;
@@ -38,6 +42,10 @@ public class UserResource {
     @GET
     @Path("/info")
     @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Get username", description = "Get username of the user")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Username retrieved")
+    })
     public Response getUserInfo(@Context HttpServletRequest request) {
         User user = (User) request.getSession().getAttribute("user");
         JsonObject jsonObject = new JsonObject();
@@ -52,7 +60,13 @@ public class UserResource {
     @GET
     @Path("/products")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getProducts(@QueryParam("page") @DefaultValue("1") int page) {
+    @Operation(summary = "Get products", description = "Fetch all the products in database with pagination")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Products retrieved for the current page")
+    })
+    public Response getProducts(
+        @Parameter(description = "Page Number", required = true)
+        @QueryParam("page") @DefaultValue("1") int page) {
         List<Product> products = ProductDao.getProductsForPage(page, PAGE_SIZE);
 
         int totalProductsCount = ProductDao.getTotalProductsCount();
@@ -71,8 +85,16 @@ public class UserResource {
     @Path("/addToCart")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Add product to cart", description = "Add a product to the user cart")
+    @ApiResponses({
+        @ApiResponse(responseCode = "201", description = "New cart item added to the user cart"),
+        @ApiResponse(responseCode = "409", description = "Product already available in the cart"),
+        @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
     public Response addToCart(
+        @Parameter(description = "Product ID", required = true)
         @FormParam("productId") int productId,
+        
         @Context HttpServletRequest request
     ) {
         User user = (User) request.getSession().getAttribute("user");
@@ -84,7 +106,7 @@ public class UserResource {
                 jsonObject.addProperty("status", "success");
                 jsonObject.addProperty("message", "Product added to cart successfully");
                 logger.info("Product with Product Id: {} added to cart", productId);
-                return Response.status(Response.Status.OK).entity(jsonObject.toString()).build();
+                return Response.status(Response.Status.CREATED).entity(jsonObject.toString()).build();
             } else {
                 jsonObject.addProperty("status", "error");
                 jsonObject.addProperty("message", "Error adding product to cart");

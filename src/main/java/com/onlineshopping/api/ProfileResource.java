@@ -13,6 +13,10 @@ import com.google.gson.JsonObject;
 import com.onlineshopping.dao.UserDao;
 import com.onlineshopping.model.User;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.ws.rs.Consumes;
@@ -33,6 +37,10 @@ public class ProfileResource {
     @GET
     @Path("/getUserProfile")
     @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Get user profile", description = "Fetch the current user details")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Retrieved user details")
+    })
     public Response getUserProfile(@Context HttpServletRequest request) throws SQLException {
         HttpSession session = request.getSession(false);
 
@@ -51,11 +59,23 @@ public class ProfileResource {
     @Path("/update")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Update profile", description = "Updates user details in database")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "User details updated in database")
+    })
     public Response updateProfile(
         @Context HttpServletRequest request,
+
+        @Parameter(description = "User ID", required = true)
         @FormParam("userId") int userId,
+
+        @Parameter(description = "Email ID")
         @FormParam("email") String email,
+
+        @Parameter(description = "Mobile Number")
         @FormParam("mobile") String mobile,
+
+        @Parameter(description = "Profile Picture")
         @FormDataParam("profile-picture") InputStream filePart
     ) throws IOException {
         JsonObject jsonObject = new JsonObject();

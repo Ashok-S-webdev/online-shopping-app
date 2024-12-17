@@ -6,6 +6,10 @@ import org.slf4j.LoggerFactory;
 import com.google.gson.JsonObject;
 import com.onlineshopping.model.User;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.ws.rs.Consumes;
@@ -25,7 +29,17 @@ public class OtpResource {
     @Path("/verify")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response verifyOtp(@FormParam("otp") String enteredOtp, @Context HttpServletRequest request) {
+    @Operation(summary = "Verify OTP", description = "Checks if the entered otp is correct and assign role")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "OTP is validated and user is logged in"),
+        @ApiResponse(responseCode = "401", description = "Invalid OTP")
+    })
+    public Response verifyOtp(
+        @Parameter(description = "OTP", required = true)    
+        @FormParam("otp") String enteredOtp, 
+        
+        @Context HttpServletRequest request
+    ) {
         HttpSession session = request.getSession(false);
 
         if (session == null) {
@@ -42,12 +56,13 @@ public class OtpResource {
             jsonObject.addProperty("status", "success");
             jsonObject.addProperty("role", user.getRole());
             logger.info("User successfully logged in");
-        }else {
-            jsonObject.addProperty("status", "error");
-            jsonObject.addProperty("message", "Invalid otp");
-            logger.warn("Invalid OTP");
+            return Response.ok().entity(jsonObject.toString()).build();
         }
 
-        return Response.ok().entity(jsonObject.toString()).build();
+        jsonObject.addProperty("status", "error");
+        jsonObject.addProperty("message", "Invalid otp");
+        logger.warn("Invalid OTP");
+
+        return Response.status(Response.Status.UNAUTHORIZED).entity(jsonObject.toString()).build();
     }
 }

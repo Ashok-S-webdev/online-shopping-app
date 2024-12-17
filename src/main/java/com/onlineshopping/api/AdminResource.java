@@ -18,6 +18,10 @@ import com.onlineshopping.dao.UserDao;
 import com.onlineshopping.model.Product;
 import com.onlineshopping.model.User;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.Part;
 import jakarta.ws.rs.Consumes;
@@ -42,6 +46,10 @@ public class AdminResource {
     @GET
     @Path("/getUsers")
     @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Get all users", description = "Fetch a list of all registered users")
+    @ApiResponses(
+        @ApiResponse(responseCode = "200", description = "Users retrieved successfully")
+    )
     public Response getUsers(@Context HttpServletRequest request) {
         User loggedInUser = (User) request.getSession().getAttribute("user");
         
@@ -57,6 +65,10 @@ public class AdminResource {
     @GET
     @Path("/getProducts")
     @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Get all products", description = "Fetch a list of all the product details")
+    @ApiResponses(
+        @ApiResponse(responseCode = "200", description = "Products retrieved successfully")
+    )
     public Response getProducts(@Context HttpServletRequest request) {
         List<Product> products = ProductDao.getProducts();
         return Response.ok(new Gson().toJson(products)).build();
@@ -66,7 +78,15 @@ public class AdminResource {
     @GET
     @Path("/getProductDetails")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getProductDetails(@QueryParam("productId") int productId) {
+    @Operation(summary = "Get specific product details", description = "Fetch a specific product details using a productId")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Product details retrieved successfully"),
+        @ApiResponse(responseCode = "404", description = "Product with the productId not found")
+    })
+    public Response getProductDetails(
+        @QueryParam("productId")
+        @Parameter(description = "product ID to retrieve product details", required = true) int productId
+    ) {
         Product product = ProductDao.getProductByProductId(productId);
         if (product == null) {
             return Response.status(Response.Status.NOT_FOUND).entity("Product not found").build();
@@ -78,7 +98,14 @@ public class AdminResource {
     @DELETE
     @Path("/removeProduct")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response removeProduct(@QueryParam("productId") int productId) {
+    @Operation(summary = "Remove product", description = "Remove product from the database")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Product removed from the system")
+    })
+    public Response removeProduct(
+        @QueryParam("productId")
+        @Parameter(description = "product ID to retrieve product details", required = true) int productId
+    ) {
         ProductDao.removeProduct(productId);
 
         JsonObject jsonObject = new JsonObject();
@@ -94,10 +121,23 @@ public class AdminResource {
     @Path("/updateProduct")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Update product", description = "Update details of the product in the database")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Product details updated successfully"),
+        @ApiResponse(responseCode = "404", description = "Product with the product id not found"),
+        @ApiResponse(responseCode = "500", description = "Internal Server Error")
+    })
     public Response updateProduct(
+        @Parameter(description = "product ID", required = true)
         @FormParam("productId") int productId,
+
+        @Parameter(description = "Product Description")
         @FormParam("productDescription") String desc,
+
+        @Parameter(description = "Product Price")
         @FormParam("productPrice") double price,
+
+        @Parameter(description = "Product Image")
         @FormDataParam("productImage") InputStream filePart) throws IOException 
     {
         JsonObject jsonObject = new JsonObject();
@@ -139,10 +179,23 @@ public class AdminResource {
     @Path("/addProduct")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Add a new product", description = "Add a new product to the database")
+    @ApiResponses({
+        @ApiResponse(responseCode = "201", description = "New product created and added to the database"),
+        @ApiResponse(responseCode = "409", description = "Product with the same name exists"),
+        @ApiResponse(responseCode = "500", description = "Internal Server Error")
+    })
     public Response addProduct(
+            @Parameter(description = "Product Name", required = true)
             @FormParam("productName") String name,
+            
+            @Parameter(description = "Product Description", required = true)
             @FormParam("productDescription") String desc,
+            
+            @Parameter(description = "Product Price", required = true)
             @FormParam("productPrice") double price,
+
+            @Parameter(description = "Product Image")
             @FormDataParam("productImage") Part filePart) {
 
         JsonObject jsonObject = new JsonObject();
