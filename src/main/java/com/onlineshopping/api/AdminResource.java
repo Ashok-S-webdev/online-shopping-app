@@ -15,15 +15,19 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.onlineshopping.dao.ProductDao;
 import com.onlineshopping.dao.UserDao;
+import com.onlineshopping.model.SuccessResponse;
+import com.onlineshopping.model.ErrorResponse;
 import com.onlineshopping.model.Product;
 import com.onlineshopping.model.User;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.Part;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.FormParam;
@@ -46,10 +50,19 @@ public class AdminResource {
     @GET
     @Path("/getUsers")
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Get all users", description = "Fetch a list of all registered users")
-    @ApiResponses(
-        @ApiResponse(responseCode = "200", description = "Users retrieved successfully")
-    )
+    @Operation(summary = "Get all users", description = "Fetch a list of all registered users", tags = {"Admin"})
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Users retrieved successfully",
+        content = @Content(
+            mediaType = "application/json",
+            array = @ArraySchema(schema = @Schema(implementation = User.class))
+        )),
+        @ApiResponse(responseCode = "401", description = "Cannot access this api",
+        content = @Content(
+            mediaType = "application/json",
+            schema = @Schema(implementation = ErrorResponse.class)
+        ))
+    })
     public Response getUsers(@Context HttpServletRequest request) {
         User loggedInUser = (User) request.getSession().getAttribute("user");
         
@@ -65,10 +78,19 @@ public class AdminResource {
     @GET
     @Path("/getProducts")
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Get all products", description = "Fetch a list of all the product details")
-    @ApiResponses(
-        @ApiResponse(responseCode = "200", description = "Products retrieved successfully")
-    )
+    @Operation(summary = "Get all products", description = "Fetch a list of all the product details", tags = {"Admin"})
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Products retrieved successfully",
+        content = @Content(
+            mediaType = "application/json",
+            array = @ArraySchema(schema = @Schema(implementation = Product.class))
+        )),
+        @ApiResponse(responseCode = "401", description = "Cannot access this api",
+        content = @Content(
+            mediaType = "application/json",
+            schema = @Schema(implementation = ErrorResponse.class)
+        ))
+    })
     public Response getProducts(@Context HttpServletRequest request) {
         List<Product> products = ProductDao.getProducts();
         return Response.ok(new Gson().toJson(products)).build();
@@ -78,10 +100,23 @@ public class AdminResource {
     @GET
     @Path("/getProductDetails")
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Get specific product details", description = "Fetch a specific product details using a productId")
+    @Operation(summary = "Get specific product details", description = "Fetch a specific product details using a productId", tags = {"Admin"})
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Product details retrieved successfully"),
-        @ApiResponse(responseCode = "404", description = "Product with the productId not found")
+        @ApiResponse(responseCode = "200", description = "Product details retrieved successfully",
+        content = @Content(
+            mediaType = "application/json",
+            schema = @Schema(implementation = Product.class)
+        )),
+        @ApiResponse(responseCode = "404", description = "Product with the productId not found",
+        content = @Content(
+            mediaType = "application/json",
+            schema = @Schema(implementation = ErrorResponse.class)
+        )),
+        @ApiResponse(responseCode = "401", description = "Cannot access this api",
+        content = @Content(
+            mediaType = "application/json",
+            schema = @Schema(implementation = ErrorResponse.class)
+        ))
     })
     public Response getProductDetails(
         @QueryParam("productId")
@@ -89,7 +124,10 @@ public class AdminResource {
     ) {
         Product product = ProductDao.getProductByProductId(productId);
         if (product == null) {
-            return Response.status(Response.Status.NOT_FOUND).entity("Product not found").build();
+            JsonObject jsonObject = new JsonObject();
+            jsonObject.addProperty("status", "error");
+            jsonObject.addProperty("message", "Product not found");
+            return Response.status(Response.Status.NOT_FOUND).entity(jsonObject.toString()).build();
         }
         return Response.ok(new Gson().toJson(product)).build();
     }
@@ -98,9 +136,18 @@ public class AdminResource {
     @DELETE
     @Path("/removeProduct")
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Remove product", description = "Remove product from the database")
+    @Operation(summary = "Remove product", description = "Remove product from the database", tags = {"Admin"})
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Product removed from the system")
+        @ApiResponse(responseCode = "200", description = "Product removed from the system", 
+        content = @Content(
+            mediaType = "application/json",
+            schema = @Schema(implementation = SuccessResponse.class)
+        )),
+        @ApiResponse(responseCode = "401", description = "Cannot access this api",
+        content = @Content(
+            mediaType = "application/json",
+            schema = @Schema(implementation = ErrorResponse.class)
+        ))
     })
     public Response removeProduct(
         @QueryParam("productId")
@@ -121,11 +168,28 @@ public class AdminResource {
     @Path("/updateProduct")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Update product", description = "Update details of the product in the database")
+    @Operation(summary = "Update product", description = "Update details of the product in the database", tags = {"Admin"})
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Product details updated successfully"),
-        @ApiResponse(responseCode = "404", description = "Product with the product id not found"),
-        @ApiResponse(responseCode = "500", description = "Internal Server Error")
+        @ApiResponse(responseCode = "200", description = "Product details updated successfully",
+        content = @Content(
+            mediaType = "application/json",
+            schema = @Schema(implementation = SuccessResponse.class)
+        )),
+        @ApiResponse(responseCode = "404", description = "Product with the product id not found",
+        content = @Content(
+            mediaType = "application/json",
+            schema = @Schema(implementation = ErrorResponse.class)
+        )),
+        @ApiResponse(responseCode = "500", description = "Internal Server Error",
+        content = @Content(
+            mediaType = "application/json",
+            schema = @Schema(implementation = ErrorResponse.class)
+        )),
+        @ApiResponse(responseCode = "401", description = "Cannot access this api",
+        content = @Content(
+            mediaType = "application/json",
+            schema = @Schema(implementation = ErrorResponse.class)
+        ))
     })
     public Response updateProduct(
         @Parameter(description = "product ID", required = true)
@@ -179,11 +243,28 @@ public class AdminResource {
     @Path("/addProduct")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Add a new product", description = "Add a new product to the database")
+    @Operation(summary = "Add a new product", description = "Add a new product to the database", tags = {"Admin"})
     @ApiResponses({
-        @ApiResponse(responseCode = "201", description = "New product created and added to the database"),
-        @ApiResponse(responseCode = "409", description = "Product with the same name exists"),
-        @ApiResponse(responseCode = "500", description = "Internal Server Error")
+        @ApiResponse(responseCode = "201", description = "New product created and added to the database",
+        content = @Content(
+            mediaType = "application/json",
+            schema = @Schema(implementation = SuccessResponse.class)
+        )),
+        @ApiResponse(responseCode = "409", description = "Product with the same name exists",
+        content = @Content(
+            mediaType = "application/json",
+            schema = @Schema(implementation = ErrorResponse.class)
+        )),
+        @ApiResponse(responseCode = "500", description = "Internal Server Error",
+        content = @Content(
+            mediaType = "application/json",
+            schema = @Schema(implementation = ErrorResponse.class)
+        )),
+        @ApiResponse(responseCode = "401", description = "Cannot access this api",
+        content = @Content(
+            mediaType = "application/json",
+            schema = @Schema(implementation = ErrorResponse.class)
+        ))
     })
     public Response addProduct(
             @Parameter(description = "Product Name", required = true)
@@ -196,7 +277,7 @@ public class AdminResource {
             @FormParam("productPrice") double price,
 
             @Parameter(description = "Product Image")
-            @FormDataParam("productImage") Part filePart) {
+            @FormDataParam("productImage") InputStream filePart) {
 
         JsonObject jsonObject = new JsonObject();
         Product existingProduct = ProductDao.getProductByProductName(name);
@@ -208,15 +289,15 @@ public class AdminResource {
         }
 
          // Chekcing if image is uploaded
-        InputStream fileContent = null;
         try {
-            if (filePart != null && filePart.getSize() > 0) {
-                fileContent = filePart.getInputStream();
+            if (filePart != null) {
+                System.out.println("with image");
             } else {
-                fileContent = getDefaultImage();
+                System.out.println("without image");
+                filePart = getDefaultImage();
             }
+            ProductDao.addProductToDB(name, desc, price, filePart);
 
-            ProductDao.addProductToDB(name, desc, price, fileContent);
 
             jsonObject.addProperty("status", "success");
             jsonObject.addProperty("message", "Product added successfully");

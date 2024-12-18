@@ -11,10 +11,14 @@ import org.slf4j.LoggerFactory;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.onlineshopping.dao.UserDao;
+import com.onlineshopping.model.ErrorResponse;
+import com.onlineshopping.model.SuccessResponse;
 import com.onlineshopping.model.User;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpServletRequest;
@@ -37,9 +41,18 @@ public class ProfileResource {
     @GET
     @Path("/getUserProfile")
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Get user profile", description = "Fetch the current user details")
+    @Operation(summary = "Get user profile", description = "Fetch the current user details", tags = {"Profile", "User"})
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Retrieved user details")
+        @ApiResponse(responseCode = "200", description = "Retrieved user details",
+        content = @Content(
+            mediaType = "application/json",
+            schema = @Schema(implementation = SuccessResponse.class)
+        )),
+        @ApiResponse(responseCode = "401", description = "Cannot access this api",
+        content = @Content(
+            mediaType = "application/json",
+            schema = @Schema(implementation = ErrorResponse.class)
+        ))
     })
     public Response getUserProfile(@Context HttpServletRequest request) throws SQLException {
         HttpSession session = request.getSession(false);
@@ -59,9 +72,18 @@ public class ProfileResource {
     @Path("/update")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Update profile", description = "Updates user details in database")
+    @Operation(summary = "Update profile", description = "Updates user details in database", tags = {"Profile", "User"})
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "User details updated in database")
+        @ApiResponse(responseCode = "200", description = "User details updated in database",
+        content = @Content(
+            mediaType = "application/json",
+            schema = @Schema(implementation = SuccessResponse.class)
+        )),
+        @ApiResponse(responseCode = "401", description = "Cannot access this api",
+        content = @Content(
+            mediaType = "application/json",
+            schema = @Schema(implementation = ErrorResponse.class)
+        ))
     })
     public Response updateProfile(
         @Context HttpServletRequest request,

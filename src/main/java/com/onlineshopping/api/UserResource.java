@@ -12,11 +12,15 @@ import com.google.gson.JsonObject;
 import com.onlineshopping.dao.CartItemDao;
 import com.onlineshopping.dao.ProductDao;
 import com.onlineshopping.model.CartItem;
+import com.onlineshopping.model.ErrorResponse;
 import com.onlineshopping.model.Product;
+import com.onlineshopping.model.SuccessResponse;
 import com.onlineshopping.model.User;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpServletRequest;
@@ -42,9 +46,23 @@ public class UserResource {
     @GET
     @Path("/info")
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Get username", description = "Get username of the user")
+    @Operation(summary = "Get username", description = "Get username of the user", tags = {"User"})
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Username retrieved")
+        @ApiResponse(responseCode = "200", description = "Username retrieved",
+        content = @Content(
+            mediaType = "application/json",
+            schema = @Schema(
+                example = "{\n" +
+                          "  \"status\": \"success\",\n" +
+                          "  \"username\": \"user1\",\n" +
+                          "}"
+            )
+        )),
+        @ApiResponse(responseCode = "401", description = "Cannot access this api",
+        content = @Content(
+            mediaType = "application/json",
+            schema = @Schema(implementation = ErrorResponse.class)
+        ))
     })
     public Response getUserInfo(@Context HttpServletRequest request) {
         User user = (User) request.getSession().getAttribute("user");
@@ -60,9 +78,18 @@ public class UserResource {
     @GET
     @Path("/products")
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Get products", description = "Fetch all the products in database with pagination")
+    @Operation(summary = "Get products", description = "Fetch all the products in database with pagination", tags = {"User"})
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Products retrieved for the current page")
+        @ApiResponse(responseCode = "200", description = "Products retrieved for the current page",
+        content = @Content(
+            mediaType = "application/json",
+            schema = @Schema(implementation = SuccessResponse.class)
+        )),
+        @ApiResponse(responseCode = "401", description = "Cannot access this api",
+        content = @Content(
+            mediaType = "application/json",
+            schema = @Schema(implementation = ErrorResponse.class)
+        ))
     })
     public Response getProducts(
         @Parameter(description = "Page Number", required = true)
@@ -85,11 +112,28 @@ public class UserResource {
     @Path("/addToCart")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Add product to cart", description = "Add a product to the user cart")
+    @Operation(summary = "Add product to cart", description = "Add a product to the user cart", tags = {"User"})
     @ApiResponses({
-        @ApiResponse(responseCode = "201", description = "New cart item added to the user cart"),
-        @ApiResponse(responseCode = "409", description = "Product already available in the cart"),
-        @ApiResponse(responseCode = "500", description = "Internal server error")
+        @ApiResponse(responseCode = "201", description = "New cart item added to the user cart",
+        content = @Content(
+            mediaType = "application/json",
+            schema = @Schema(implementation = SuccessResponse.class)
+        )),
+        @ApiResponse(responseCode = "409", description = "Product already available in the cart",
+        content = @Content(
+            mediaType = "application/json",
+            schema = @Schema(implementation = ErrorResponse.class)
+        )),
+        @ApiResponse(responseCode = "500", description = "Internal server error",
+        content = @Content(
+            mediaType = "application/json",
+            schema = @Schema(implementation = ErrorResponse.class)
+        )),
+        @ApiResponse(responseCode = "401", description = "Cannot access this api",
+        content = @Content(
+            mediaType = "application/json",
+            schema = @Schema(implementation = ErrorResponse.class)
+        ))
     })
     public Response addToCart(
         @Parameter(description = "Product ID", required = true)

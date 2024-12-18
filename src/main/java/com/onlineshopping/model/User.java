@@ -1,13 +1,30 @@
 package com.onlineshopping.model;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(description = "User details")
 public class User {
-    private String image;
+
+    @Schema(description = "Unique Identifier of User", example = "1")
     private int userId;
+
+    @Schema(description = "Username of the user", example = "user1")
     private String username;
+
+    @Schema(description = "Hashed password of the user", example = "$2a$10$EixZaYVK1fsbw1Zfbx3OpO")
     private String passwordHash;
+
+    @Schema(description = "Email ID of the user", example = "user1@gmail.com")
     private String email;
+
+    @Schema(description = "Mobile Number of the user", example = "9876543210")
     private String mobile;
+
+    @Schema(description = "Role of the user(admin/user)", example = "user")
     private String role;
+
+    @Schema(description = "Base64 string of user profile picture")
+    private String image;
 
 
     public User(String username, String passwordHash, String email, String mobile, String role, String image) {

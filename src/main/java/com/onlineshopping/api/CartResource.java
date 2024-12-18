@@ -10,7 +10,10 @@ import com.google.gson.JsonObject;
 import com.onlineshopping.dao.CartItemDao;
 import com.onlineshopping.dao.ProductDao;
 import com.onlineshopping.model.CartItem;
+import com.onlineshopping.model.CartItemProductResponse;
+import com.onlineshopping.model.ErrorResponse;
 import com.onlineshopping.model.Product;
+import com.onlineshopping.model.SuccessResponse;
 import com.onlineshopping.model.User;
 import com.onlineshopping.utils.GmailSender;
 import com.onlineshopping.utils.MailSender;
@@ -19,6 +22,8 @@ import com.onlineshopping.utils.ZohoMailSender;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpServletRequest;
@@ -42,9 +47,18 @@ public class CartResource {
     @GET
     @Path("/cartItems")
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Get all cart items", description = "Fetch all the cart items of the user")
+    @Operation(summary = "Get all cart items", description = "Fetch all the cart items of the user", tags = {"Cart", "User"})
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Retrieved all the cart items from database")
+        @ApiResponse(responseCode = "200", description = "Retrieved all the cart items from database",
+        content = @Content(
+            mediaType = "application/json",
+            schema = @Schema(implementation = CartItemProductResponse.class)
+        )),
+        @ApiResponse(responseCode = "401", description = "Cannot access this api",
+        content = @Content(
+            mediaType = "application/json",
+            schema = @Schema(implementation = ErrorResponse.class)
+        ))
     })
     public Response getCartItems(@Context HttpServletRequest request) {
         User user = (User) request.getSession().getAttribute("user");
@@ -57,9 +71,18 @@ public class CartResource {
     @Path("/update")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Update cart item", description = "Update the quantity of the cart item in user cart")
+    @Operation(summary = "Update cart item", description = "Update the quantity of the cart item in user cart", tags = {"Cart", "User"})
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Cart item quantity updated")
+        @ApiResponse(responseCode = "200", description = "Cart item quantity updated",
+        content = @Content(
+            mediaType = "application/json",
+            schema = @Schema(implementation = SuccessResponse.class)
+        )),
+        @ApiResponse(responseCode = "401", description = "Cannot access this api",
+        content = @Content(
+            mediaType = "application/json",
+            schema = @Schema(implementation = ErrorResponse.class)
+        ))
     })
     public Response updateQuantity(
         @Parameter(description = "Cart Item ID", required = true)
@@ -81,9 +104,18 @@ public class CartResource {
     @Path("/remove")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Remove cart item", description = "Remove cart item from the user cart")
+    @Operation(summary = "Remove cart item", description = "Remove cart item from the user cart", tags = {"Cart", "User"})
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Cart item removed from the user cart")
+        @ApiResponse(responseCode = "200", description = "Cart item removed from the user cart",
+        content = @Content(
+            mediaType = "application/json",
+            schema = @Schema(implementation = SuccessResponse.class)
+        )),
+        @ApiResponse(responseCode = "401", description = "Cannot access this api",
+        content = @Content(
+            mediaType = "application/json",
+            schema = @Schema(implementation = ErrorResponse.class)
+        ))
     })
     public Response removeItem(
         @Parameter(description = "Cart Item ID", required = true)
@@ -101,10 +133,23 @@ public class CartResource {
     @POST
     @Path("/checkout")
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Checkout cart", description = "Checkout the user cart")
+    @Operation(summary = "Checkout cart", description = "Checkout the user cart", tags = {"Cart", "User"})
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Cart checked out and bill sent to user"),
-        @ApiResponse(responseCode = "404", description = "No products in the cart")
+        @ApiResponse(responseCode = "200", description = "Cart checked out and bill sent to user",
+        content = @Content(
+            mediaType = "application/json",
+            schema = @Schema(implementation = SuccessResponse.class)
+        )),
+        @ApiResponse(responseCode = "404", description = "No products in the cart",
+        content = @Content(
+            mediaType = "application/json",
+            schema = @Schema(implementation = ErrorResponse.class)
+        )),
+        @ApiResponse(responseCode = "401", description = "Cannot access this api",
+        content = @Content(
+            mediaType = "application/json",
+            schema = @Schema(implementation = ErrorResponse.class)
+        ))
     })
     public Response checkout(@Context HttpServletRequest request) {
         User user = (User) request.getSession().getAttribute("user");
