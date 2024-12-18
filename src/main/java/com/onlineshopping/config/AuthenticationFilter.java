@@ -26,6 +26,7 @@ public class AuthenticationFilter implements Filter {
         HttpSession session = httpRequest.getSession(false); 
         String requestURI = httpRequest.getRequestURI();
 
+        httpResponse.setContentType("application/json");
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("status", "error");
         jsonObject.addProperty("message", "Unauthorized, Cannot access this page");

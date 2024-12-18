@@ -20,6 +20,7 @@ import com.onlineshopping.model.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -51,11 +52,8 @@ public class UserResource {
         @ApiResponse(responseCode = "200", description = "Username retrieved",
         content = @Content(
             mediaType = "application/json",
-            schema = @Schema(
-                example = "{\n" +
-                          "  \"status\": \"success\",\n" +
-                          "  \"username\": \"user1\",\n" +
-                          "}"
+            examples = @ExampleObject(
+                value = "{ \"status\": \"success\", \"username\": \"user1\" }"
             )
         )),
         @ApiResponse(responseCode = "401", description = "Cannot access this api",
@@ -83,7 +81,7 @@ public class UserResource {
         @ApiResponse(responseCode = "200", description = "Products retrieved for the current page",
         content = @Content(
             mediaType = "application/json",
-            schema = @Schema(implementation = SuccessResponse.class)
+            schema = @Schema(implementation = Product.class)
         )),
         @ApiResponse(responseCode = "401", description = "Cannot access this api",
         content = @Content(
