@@ -37,13 +37,24 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
+
+/**
+ * Resource class for user related operations.
+ * 
+ * Provides API classes to fetch user details, get all products and add products to cart
+ */
 @Path("/user")
 public class UserResource {
     private static final Logger logger = LoggerFactory.getLogger(UserResource.class);
 
     private static final int PAGE_SIZE = 4;
 
-    // Method for getting User info
+    /**
+     * Retrieves the username of the logged in user
+     * 
+     * @param request Http request containing session information
+     * @return A json {@link Response} object containing status and the username
+     */
     @GET
     @Path("/info")
     @Produces(MediaType.APPLICATION_JSON)
@@ -72,7 +83,11 @@ public class UserResource {
         return Response.status(Response.Status.OK).entity(jsonObject.toString()).build();
     }
 
-    // Method for getting available products
+    /**
+     * Retrieves all the available products for the user to purchase
+     * @param page Page number inorder to retrieve products for the page
+     * @return A jsn {@link Response} object containing list of product details for the page along with total pages and current page
+     */
     @GET
     @Path("/products")
     @Produces(MediaType.APPLICATION_JSON)
@@ -105,7 +120,12 @@ public class UserResource {
         return Response.status(Response.Status.OK).entity(new Gson().toJson(result)).build();
     }
 
-    // Method for adding product to cart
+    /**
+     * Creates a cart item in database and adds it to the user cart
+     * @param productId Product ID of the product to be added to the cart
+     * @param request  Http request containing session information
+     * @return
+     */
     @POST
     @Path("/addToCart")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)

@@ -27,10 +27,24 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
+/**
+ * Resource class for User login
+ * 
+ * Provides API class for user login with session creation and otp generation
+ */
 @Path("/login")
 public class LoginResource {
     private static final Logger logger = LoggerFactory.getLogger(LoginResource.class);
     
+    /**
+     * Creates a session without role and generates otp for further processing
+     * @param username Username of the user account
+     * @param password Password of the user account
+     * @param request Http request to create session if user is authenticated
+     * @return A json {@link Response} object containing status of the action and a message
+     * @throws IOException
+     * @throws SQLException
+     */
     @POST
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)

@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"com.onlineshopping.api"},{"l":"com.onlineshopping.config"},{"l":"com.onlineshopping.dao"},{"l":"com.onlineshopping.model"},{"l":"com.onlineshopping.utils"}];updateSearchResults();

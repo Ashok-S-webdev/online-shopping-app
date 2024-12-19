@@ -21,10 +21,22 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
+/**
+ * Resource class for OTP verification and Role assignment
+ * 
+ * Provides API class for verifying if the OTP entered is correct and assigns a role
+ */
 @Path("/otp")
 public class OtpResource {
     private static final Logger logger = LoggerFactory.getLogger(OtpResource.class);
 
+    /**
+     * Verfies if the OTP entered by the user matches the OTP generated and assigns role
+     * 
+     * @param enteredOtp OTP entered by the user
+     * @param request Http request containing the session information
+     * @return A json {@link Response} object containing status of the action and a message
+     */
     @POST
     @Path("/verify")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)

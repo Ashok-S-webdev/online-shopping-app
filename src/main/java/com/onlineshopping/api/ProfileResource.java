@@ -33,6 +33,7 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
+
 @Path("/profile")
 public class ProfileResource {
     private static final Logger logger = LoggerFactory.getLogger(ProfileResource.class);

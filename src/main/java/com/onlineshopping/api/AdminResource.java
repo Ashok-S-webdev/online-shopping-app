@@ -41,12 +41,22 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
+/**
+ * Resource class for admin operations.
+ * 
+ * Provides API classes to fetch all users, all products, specific product details, adding updating and deleting products
+ */
 @Path("/admin")
 public class AdminResource {
     private static final Logger logger = LoggerFactory.getLogger(AdminResource.class);
     private static final String DEFAULT_IMAGE_PATH = "C:\\Program Files\\Apache Software Foundation\\Tomcat 10.1\\webapps\\online-shopping-app\\data\\clock.jpg";
 
-    // Method for getting all the user details
+    /**
+     * Retrieves all the user details from the database
+     * 
+     * @param request Http request containing session information
+     * @return A json {@link Response} object containing a list of registered users
+     */
     @GET
     @Path("/getUsers")
     @Produces(MediaType.APPLICATION_JSON)
@@ -74,7 +84,12 @@ public class AdminResource {
         return Response.ok(new Gson().toJson(users)).build();
     }
 
-    // Method for getting all the product details
+    /**
+     * Retrieves all the product details from the database
+     * 
+     * @param request Http request containg session information
+     * @return A json {@link Response} object containing a list of products
+     */
     @GET
     @Path("/getProducts")
     @Produces(MediaType.APPLICATION_JSON)
@@ -96,7 +111,12 @@ public class AdminResource {
         return Response.ok(new Gson().toJson(products)).build();
     }
 
-    // Method for getting a single product detail with productId
+    /**
+     * Retrieves details of a specific product
+     * 
+     * @param productId Product ID of the product details to be fetched
+     * @return A json {@link Response} object containing the product details
+     */
     @GET
     @Path("/getProductDetails")
     @Produces(MediaType.APPLICATION_JSON)
@@ -132,7 +152,12 @@ public class AdminResource {
         return Response.ok(new Gson().toJson(product)).build();
     }
 
-    // Method for removing product from database
+    /**
+     * Deletes the product from the database
+     * 
+     * @param productId Product ID of the product to be deleted
+     * @return A json {@link Response} object with status of the action and a message
+     */
     @DELETE
     @Path("/removeProduct")
     @Produces(MediaType.APPLICATION_JSON)
@@ -163,7 +188,16 @@ public class AdminResource {
         return Response.ok(jsonObject.toString()).build();
     }
 
-    // Method for updating product details in database
+    /**
+     * Updates details of a product
+     * 
+     * @param productId Product ID of the product to be updated
+     * @param desc New product descriptiion for the product
+     * @param price New price for the product
+     * @param filePart New Image for the product
+     * @return A json {@link Response} object containing the status of the action and a message
+     * @throws IOException
+     */
     @PUT
     @Path("/updateProduct")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
@@ -238,7 +272,15 @@ public class AdminResource {
         }
     }
 
-    // Method to add new product
+    /**
+     * Add new product to the database
+     * 
+     * @param name Name of the product
+     * @param desc Description of the product
+     * @param price Price of the product
+     * @param filePart Image for the product
+     * @return A json {@link Response} object containing the status of the action and a message
+     */
     @POST
     @Path("/addProduct")
     @Consumes(MediaType.MULTIPART_FORM_DATA)

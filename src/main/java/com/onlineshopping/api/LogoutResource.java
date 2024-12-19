@@ -17,10 +17,21 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
+/**
+ * Resource for user logout and session invalidation
+ * 
+ * Provides API classes for logging out and invalidating the user session
+ */
 @Path("/logout")
 public class LogoutResource {
     private static final Logger logger = LoggerFactory.getLogger(LogoutResource.class);
 
+    /**
+     * Invalidates the user session and redirects to the login page
+     * 
+     * @param request Http request containing the session information
+     * @return Redirection to login page
+     */
     @POST
     @Produces(MediaType.TEXT_HTML)
     @Operation(summary = "Logout user", description = "The user session is invalidated and the user is logged out")

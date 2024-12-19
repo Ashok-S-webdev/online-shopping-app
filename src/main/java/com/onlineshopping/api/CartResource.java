@@ -39,11 +39,20 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
+/**
+ * Resource class for cart item related operations
+ * 
+ * Provides API classes to fetch cart items, update quantity, remove cart items and checkout cart
+ */
 @Path("/cart")
 public class CartResource {
     private static final Logger logger = LoggerFactory.getLogger(CartResource.class);
     
-    // Method for getting all the cart item details
+    /**
+     * Retrieves all the cart items for the specific user from database
+     * @param request Http request containing session information
+     * @return A json {@link Response} object containing list of cart items
+     */
     @GET
     @Path("/cartItems")
     @Produces(MediaType.APPLICATION_JSON)
@@ -66,7 +75,13 @@ public class CartResource {
         return Response.ok().entity(cartArray.toString()).build();
     }
 
-    // Method for updating quantity of the cart item
+    /**
+     * Update cart item quantity in database
+     * 
+     * @param cartItemId Cart item ID of the cart item to be updated
+     * @param quantityChange 1 for increment and -1 for decrement
+     * @return A json {@link Response} object containing status of the action and a message
+     */
     @PUT
     @Path("/update")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
@@ -99,7 +114,12 @@ public class CartResource {
         return Response.ok().entity(jsonObject.toString()).build();
     }
 
-    // Method for removing cart item from the cart
+    /**
+     * Delete cart item from database
+     * 
+     * @param cartItemId Cart item ID of the cart item to be deleted
+     * @return A json {@link Response} object containing status of the action and a message
+     */
     @DELETE
     @Path("/remove")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
@@ -129,7 +149,12 @@ public class CartResource {
         return Response.ok().entity(jsonObject.toString()).build();
     }
 
-    // Method for checkout
+    /**
+     * Checkout the cart and remove all cart items from the cart, generates bill and send it as email to the user
+     * 
+     * @param request Http request containing session information
+     * @return A json {@link Response} object containing status of the action and a message
+     */
     @POST
     @Path("/checkout")
     @Produces(MediaType.APPLICATION_JSON)
